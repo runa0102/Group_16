@@ -66,7 +66,7 @@ class MovieDataAnalyzer:
         """
         Loads the extracted dataset into Pandas DataFrames.
         """
-        movie_file = os.path.join(self.DATA_DIR, "movie.data.tsv")
+        movie_file = os.path.join(self.DATA_DIR, "movie.metadata.tsv")
         if os.path.exists(movie_file):
             print("Loading movie data...")
             self.movies = pd.read_csv(movie_file, sep="\t", header=None)
