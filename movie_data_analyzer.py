@@ -73,3 +73,36 @@ class MovieDataAnalyzer:
             print("Movie data loaded.")
         else:
             print("Error: Movie data file not found.")
+
+
+
+    def movie_type(self, N: int = 10) -> pd.DataFrame:
+        """
+        Returns the N most common movie genres.
+
+        Args:
+        - N (int, optional): Number of genres to return. Default is 10.
+
+        Returns:
+        - pd.DataFrame: A DataFrame containing the most common movie genres and their counts.
+
+        Raises:
+        - ValueError: If N is not an integer.
+        """
+        if not isinstance(N, int):
+            raise ValueError("N must be an integer.")
+
+        # Extract the column containing genres (Column 5)
+        genre_column = self.movies[5].dropna().apply(eval)  # Converts JSON-like string into a Python dictionary
+
+        # Count occurrences of each genre
+        genre_counts = {}
+        for genres in genre_column:
+            for genre in genres.keys():
+                genre_counts[genre] = genre_counts.get(genre, 0) + 1
+
+        # Create a DataFrame with the most common genres
+        genre_df = pd.DataFrame(genre_counts.items(), columns=["Movie_Type", "Count"])
+        genre_df = genre_df.sort_values(by="Count", ascending=False).head(N)
+
+        return genre_df
