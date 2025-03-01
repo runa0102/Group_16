@@ -17,7 +17,7 @@ class MovieDataAnalyzer:
     """
 
     DATASET_URL = "http://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz"
-    DATA_DIR = "downloads/"
+    DATA_DIR = os.path.join(os.path.expanduser("~"), "downloads")
     FILE_NAME = "MovieSummaries.tar.gz"
 
     def __init__(self):
@@ -66,7 +66,7 @@ class MovieDataAnalyzer:
         """
         Loads the extracted dataset into Pandas DataFrames.
         """
-        movie_file = os.path.join(self.DATA_DIR, "movie.metadata.tsv")
+        movie_file = os.path.join(self.DATA_DIR, "MovieSummaries", "movie.metadata.tsv")
         if os.path.exists(movie_file):
             print("Loading movie data...")
             self.movies = pd.read_csv(movie_file, sep="\t", header=None)
@@ -77,32 +77,40 @@ class MovieDataAnalyzer:
 
 
     def movie_type(self, N: int = 10) -> pd.DataFrame:
-        """
-        Returns the N most common movie genres.
+         """
+         Returns the N most common movie genres.
+ 
+         Args:
+         - N (int, optional): Number of genres to return. Default is 10.
+ 
+         Returns:
+         - pd.DataFrame: A DataFrame containing the most common movie genres and their counts.
 
-        Args:
-        - N (int, optional): Number of genres to return. Default is 10.
+         Raises:
+         - ValueError: If N is not an integer.
+         """
+         if not isinstance(N, int):
+             raise ValueError("N must be an integer.")
 
-        Returns:
-        - pd.DataFrame: A DataFrame containing the most common movie genres and their counts.
+         # Extract the column containing genres (Column 8)
+         genre_column = self.movies[8].dropna()
 
-        Raises:
-        - ValueError: If N is not an integer.
-        """
-        if not isinstance(N, int):
-            raise ValueError("N must be an integer.")
+         # Ensure all values are strings before applying eval()
+         genre_column = genre_column[genre_column.apply(lambda x: isinstance(x, str))]
 
-        # Extract the column containing genres (Column 5)
-        genre_column = self.movies[5].dropna().apply(eval)  # Converts JSON-like string into a Python dictionary
+         # Convert JSON-like strings to dictionaries
+         genre_column = genre_column.apply(eval)
+ 
+         # Count occurrences of each genre (using values instead of keys)
+         genre_counts = {}
+         for genres in genre_column:
+             for genre in genres.values():  # Extract actual genre names instead of IDs
+                 genre_counts[genre] = genre_counts.get(genre, 0) + 1
 
-        # Count occurrences of each genre
-        genre_counts = {}
-        for genres in genre_column:
-            for genre in genres.keys():
-                genre_counts[genre] = genre_counts.get(genre, 0) + 1
+         # Create a DataFrame with the most common genres
+         genre_df = pd.DataFrame(genre_counts.items(), columns=["Movie_Type", "Count"])
+         genre_df = genre_df.sort_values(by="Count", ascending=False).head(N)
 
-        # Create a DataFrame with the most common genres
-        genre_df = pd.DataFrame(genre_counts.items(), columns=["Movie_Type", "Count"])
-        genre_df = genre_df.sort_values(by="Count", ascending=False).head(N)
+         return genre_df
 
-        return genre_df
+
