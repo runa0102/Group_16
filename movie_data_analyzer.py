@@ -23,7 +23,7 @@ class MovieDataAnalyzer:
     def __init__(self):
         """
         Initializes the MovieDataAnalyzer class:
-        - Creates the `downloads/` directory if not present.
+        - Creates the `downloads` directory if not present.
         - Downloads the dataset if it does not exist.
         - Extracts the dataset.
         - Loads the movie data into a Pandas DataFrame.
