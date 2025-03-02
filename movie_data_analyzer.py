@@ -112,5 +112,25 @@ class MovieDataAnalyzer:
          genre_df = genre_df.sort_values(by="Count", ascending=False).head(N)
 
          return genre_df
+    # part 2, plot second histogram with the result of method __actor_count__    
+    def actor_count(self) -> pd.DataFrame:
+        """
+        Returns a DataFrame with the number of actors per movie.
+
+        Returns:
+        - pd.DataFrame: A histogram of "number of actors" vs "movie count".
+        """
+        if not hasattr(self, 'characters'):
+            raise ValueError("Character data is not loaded.")
+
+        # Extract movie IDs and count the number of actors per movie
+        actor_counts = self.characters.groupby(0).size()
+
+        # Convert to a histogram-like DataFrame
+        actor_histogram = actor_counts.value_counts().reset_index()
+        actor_histogram.columns = ["Number of Actors", "Movie Count"]
+        actor_histogram = actor_histogram.sort_values(by="Number of Actors")
+
+        return actor_histogram
 
 
