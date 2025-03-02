@@ -75,7 +75,8 @@ class MovieDataAnalyzer:
             print("Error: Movie data file not found.")
 
 
-
+# part 1: Develop a first method for your class called __movie_type__ 
+    
     def movie_type(self, N: int = 10) -> pd.DataFrame:
          """
          Returns the N most common movie genres.
@@ -112,7 +113,8 @@ class MovieDataAnalyzer:
          genre_df = genre_df.sort_values(by="Count", ascending=False).head(N)
 
          return genre_df
-    # part 2, plot second histogram with the result of method __actor_count__    
+        
+    # part 2, Develop a second method called __actor_count__
     def actor_count(self) -> pd.DataFrame:
         """
         Returns a DataFrame with the number of actors per movie.
