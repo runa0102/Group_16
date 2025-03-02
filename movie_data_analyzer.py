@@ -136,3 +136,59 @@ class MovieDataAnalyzer:
         return actor_histogram
 
 
+    # part 3, develop third method called actor_distributions
+    @validate_arguments
+    def actor_distributions(self, gender: str, min_height: float, max_height: float, plot: bool = False) -> pd.DataFrame:
+        """
+        Returns a DataFrame with actor height distributions filtered by gender.
+
+        Args:
+        - gender (str): "All" or a specific gender from the dataset.
+        - min_height (float): Minimum height filter.
+        - max_height (float): Maximum height filter.
+        - plot (bool, optional): If True, generates a histogram plot. Default is False.
+
+        Returns:
+        - pd.DataFrame: A DataFrame containing filtered actor heights.
+
+        Raises:
+        - ValueError: If gender is not in the dataset or heights are invalid.
+        """
+        if not hasattr(self, 'characters'):
+            raise ValueError("Character data is not loaded.")
+
+        # Extract relevant columns: gender (6) and height (7)
+        df = self.characters[[6, 7]].dropna()
+        df.columns = ["Gender", "Height"]
+
+        # Convert height column to float
+        df["Height"] = pd.to_numeric(df["Height"], errors="coerce")
+
+        # Ensure min_height is ≤ max_height
+        if min_height > max_height:
+            raise ValueError("min_height must be less than or equal to max_height.")
+
+        # Apply gender filter
+        if gender.lower() != "all":
+            valid_genders = df["Gender"].dropna().unique()
+            if gender.lower() not in map(str.lower, valid_genders):
+                raise ValueError(f"Invalid gender. Choose from: {list(valid_genders)} or 'All'.")
+            df = df[df["Gender"].str.lower() == gender.lower()]
+
+        # Apply height range filter
+        df = df[(df["Height"] >= min_height) & (df["Height"] <= max_height)]
+
+        # Only plot if `plot=True`
+        if plot:
+            import matplotlib.pyplot as plt
+            plt.figure(figsize=(8, 5))
+            plt.hist(df["Height"], bins=20, edgecolor="black", alpha=0.7)
+            plt.xlabel("Height (meters)")
+            plt.ylabel("Count")
+            plt.title(f"Height Distribution for Gender: {gender}")
+            plt.grid(axis="y", linestyle="--", alpha=0.7)
+            plt.show()
+
+        return df
+
+
