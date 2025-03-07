@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from movie_data_analyzer_2 import MovieDataAnalyzer
+from movie_data_analyzer_2-2 import MovieDataAnalyzer
 
 # Initialize movie analyzer
 analyzer = MovieDataAnalyzer()
