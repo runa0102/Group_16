@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from movie_data_analyzer_2-2 import MovieDataAnalyzer
+from movie_data_analyzer_2_2 import MovieDataAnalyzer
 
 # Initialize movie analyzer
 analyzer = MovieDataAnalyzer()
@@ -48,12 +48,19 @@ elif page == "Chronological Data":
     st.title("Movie Chronology Analysis")
 
     # Section 1: Releases per Year
-    st.header("Movie Releases Over Time")
-    genre = st.selectbox("Select Genre (or All)", ["All", "Drama", "Comedy", "Action", "Horror"])
-    release_df = analyzer.releases(None if genre == "All" else genre)
+    # Fetch release data and top genres
+    release_df, top_genres = analyzer.releases()
+
+    # Add genre selection dropdown in Streamlit
+    genre = st.selectbox("Select Genre", ["All"] + top_genres)
+
+    # Get filtered movie release data
+    release_df, _ = analyzer.releases(None if genre == "All" else genre)
 
     if not release_df.empty:
         st.dataframe(release_df)
+
+        # Bar plot for movie releases over time
         fig, ax = plt.subplots()
         ax.bar(release_df["Year"], release_df["Movie Count"], color="blue", edgecolor="black")
         ax.set_xlabel("Year")
