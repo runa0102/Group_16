@@ -4,6 +4,8 @@ import requests
 import tarfile
 import pandas as pd
 import ast
+import random
+import ollama
 from typing import Optional
 from pydantic import validate_arguments
 class MovieDataAnalyzer:
@@ -223,3 +225,45 @@ class MovieDataAnalyzer:
             births = births.sort_values(by="Year")
 
         return births
+
+
+    def get_random_movie(self):
+        """Returns a random movie title and its summary."""
+        if self.movies is None or self.movies.empty:
+            raise ValueError("Movie data is not loaded.")
+    
+        random_movie = self.movies.sample(1).iloc[0]
+    
+        title = random_movie[1]  # Titel ist in Spalte 1
+        year = random_movie[3]  # Veröffentlichungsjahr in Spalte 3
+        summary = f"A movie called '{title}' released in {year}."
+    
+        return title, summary, random_movie[8]  # Spalte 8 enthält Genres
+
+    def extract_genres(self, genre_column):
+    """Extracts genres from a dictionary-like string."""
+    try:
+        genre_dict = ast.literal_eval(genre_column)
+        return list(genre_dict.keys())  # Holt nur die Genres
+    except (ValueError, SyntaxError):
+        return ["Unknown"]
+
+    def classify_genre_with_llm(self, summary):
+        """Sends a movie summary to Ollama (Mistral) and gets genre classification."""
+        prompt = (
+            "Analyze the following movie summary and return only the genres as a comma-separated list. "
+            "Example output: Action, Drama, Thriller. "
+            "Do not include extra text or explanations.\n\n"
+            f"{summary}"
+        )
+        response = ollama.chat(model="mistral", messages=[{"role": "user", "content": prompt}])
+        return response["message"]["content"].strip()
+    
+    def check_genre_match(self, real_genres, predicted_genres):
+        """Compares the actual genres with the predicted ones."""
+        real_set = set(real_genres)
+        predicted_set = set(predicted_genres.split(", "))  # LLM gibt eine kommagetrennte Liste aus
+    
+        if real_set & predicted_set:
+            return "✅ LLM correctly identified at least one genre!"
+        return "❌ No match with actual genres."
