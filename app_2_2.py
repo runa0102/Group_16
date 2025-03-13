@@ -82,7 +82,7 @@ elif page == "Chronological Data":
         ax.set_title(f"Actor Births Per {birth_mode}")
         st.pyplot(fig)
 
-  elif page == "Genre Classification":
+elif page == "Genre Classification":
     st.title("🎬 Genre Classification with AI")
 
     # Load a random movie from the dataset
