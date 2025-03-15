@@ -13,7 +13,7 @@ class MovieDataAnalyzer:
     A class to analyze movies using the CMU Movie Summaries dataset.
     """
     DATASET_URL = "http://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz"
-    DATA_DIR = os.path.join(os.path.expanduser("~"), "downloads") ##### CHANGE
+    DATA_DIR = os.path.join(os.getcwd(), "MovieData")
     FILE_NAME = "MovieSummaries.tar.gz"
 
     def __init__(self):
