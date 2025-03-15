@@ -1,7 +1,7 @@
 """Movie Data Analyzer.
 
 This script analyzes movie data by extracting insights from movie titles and plot summaries.
-It processes datasets, predicts genres, and ensures compliance with certain constraints.
+Using an AI pipeline, it also predicts the genres of movies based on their plot summaries, titles, and release years.
 """
 import os
 import tarfile
