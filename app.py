@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from movie_data_analyzer import MovieDataAnalyzer
 
-# Initialize movie analyzer
+# Initialize movie analyzer #
 analyzer = MovieDataAnalyzer()
 
 # Streamlit UI
