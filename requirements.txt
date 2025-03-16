@@ -1,0 +1,9 @@
+streamlit
+matplotlib
+pandas
+requests
+ollama
+pydantic
+tarfile
+os
+ast
