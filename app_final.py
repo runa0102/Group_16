@@ -17,7 +17,7 @@ Users can explore different pages to view genre distributions, trends, or test g
 """
 import streamlit as st
 import matplotlib.pyplot as plt
-from movie_data_analyzer_2_2 import MovieDataAnalyzer
+from movie_data_analyzer_final import MovieDataAnalyzer
 
 analyzer = MovieDataAnalyzer()
 
